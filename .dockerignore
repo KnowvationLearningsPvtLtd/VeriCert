@@ -1,0 +1,10 @@
+.git
+.gitignore
+.git
+node_modules
+dist
+logs
+.git
+.DS_Store
+pnpm-debug.log
+.env
