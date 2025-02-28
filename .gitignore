@@ -10,6 +10,15 @@ lerna-debug.log*
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
+# Environment files
+.env
+.env.development
+.env.production
+.env.development.local
+.env.test.local
+.env.production.local
+.env.local
+
 # Runtime data
 pids
 *.pid
@@ -72,13 +81,6 @@ web_modules/
 # Yarn Integrity file
 .yarn-integrity
 
-# dotenv environment variable files
-.env
-.env.development.local
-.env.test.local
-.env.production.local
-.env.local
-
 # parcel-bundler cache (https://parceljs.org/)
 .cache
 .parcel-cache
@@ -93,16 +95,12 @@ dist
 
 # Gatsby files
 .cache/
-# Comment in the public line in if your project uses Gatsby and not Next.js
-# https://nextjs.org/blog/next-9-1#public-directory-support
-# public
 
-# vuepress build output
-.vuepress/dist
+# vitepress build output
+**/.vitepress/dist
 
-# vuepress v2.x temp and cache directory
-.temp
-.cache
+# vitepress cache directory
+**/.vitepress/cache
 
 # Docusaurus cache and generated files
 .docusaurus
