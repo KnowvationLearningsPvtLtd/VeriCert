@@ -6,6 +6,7 @@ This document explains how to write structured commit messages using **commitlin
 
 ## 🔹 **Commit Message Format**
 
+
 A valid commit message must follow this format:
 
 ```plaintext
@@ -13,6 +14,8 @@ A valid commit message must follow this format:
 ```
 
 ### ✅ **Examples**
+
+
 
 ```
 feat: Add login authentication
