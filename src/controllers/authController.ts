@@ -7,7 +7,6 @@ import { registerSchema } from '../validations/registerSchema';
 
 const register = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    console.log('Incoming Request Body:', req.body);
     const parsedData = registerSchema.safeParse(req.body);
 
     if (!parsedData.success) {
