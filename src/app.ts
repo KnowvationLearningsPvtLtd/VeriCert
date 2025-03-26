@@ -1,35 +1,51 @@
-import express from 'express'
+import express from 'express';
 import config from './config/config';
 import logger from './utils/logger';
-import helmet from 'helmet'
-import xss from 'xss-clean'
-import mongoSanitize from 'express-mongo-sanitize'
-import cors from 'cors'
-import { errorHandler } from './middlewares/errorHandler';
+import helmet from 'helmet';
+import xss from 'xss-clean';
+import mongoSanitize from 'express-mongo-sanitize';
+import cors from 'cors';
+import morgan from 'morgan';
+import rateLimiter from './middlewares/rateLimiter';
+import errorHandler from './middlewares/errorHandler';
+import { authRouter } from './routes/authRoutes';
+import { userRoutes } from './routes/userRoutes';
+// import mainRouter from './routes';  // Uncomment when mainRouter is ready
 
 const app = express();
-app.use(helmet())
-app.use(express.json())
 
+// Security middlewares
+app.use(helmet());
+app.use(xss());
+app.use(mongoSanitize());
 
-app.use(xss())
-app.use(mongoSanitize())
+// CORS setup (Customize origin as needed)
+app.use(cors({ origin: '*', methods: ['GET', 'POST', 'PUT', 'DELETE'] }));
 
-app.use(cors())
+// Logging
+app.use(morgan('dev'));
 
-// if (config.ENV === 'production') {
-// }
+// Rate Limiting
+app.use(rateLimiter);
 
-app.use(errorHandler)
+// Body parser
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
+// Define routes
+app.use('/api/auth', authRouter); 
+app.use('/api/users', userRoutes)
 
+// 404 Not Found Middleware
+app.use((req, res) => {
+  res.status(404).json({ message: 'Route not found' });
+});
 
+// Global Error Handler
+app.use(errorHandler);
 
+app.listen(Number(config.PORT), '127.0.0.1',() => {
+  logger.info(`🚀 Server running on PORT:: ${config.PORT}`);
+});
 
-// app.use('/v1', mainRouter)
-
-
-app.listen(Number(config.PORT),() => {
-   logger.info(`Server is running on PORT:: ${config.PORT}`)
-})
-
+export default app;
