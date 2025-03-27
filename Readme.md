@@ -1,3 +1,5 @@
+# VeriCert
+A Digital Certificates platform
 ### 📜 Commit Message Rules Guide
 
 This document explains how to write structured commit messages using **commitlint** and the **Conventional Commits** standard.

@@ -17,9 +17,14 @@ addColors(logColors);
 
 const consoleLogFormat = format.printf(({ level, message, timestamp, meta = {} }) => {
   const colorizer = winston.format.colorize();
-  const metaString = Object.keys(meta).length ? `\nMETA: ${util.inspect(meta, { depth: null })}` : '';
-  const logMessage = `${level.toUpperCase()} --[${timestamp}] ${message} ${metaString}\n`;
-  return colorizer.colorize(level, logMessage); // Apply color to the whole log
+
+  const safeTimestamp = typeof timestamp === 'string' ? timestamp : new Date().toISOString();
+  const safeMessage = typeof message === 'string' ? message : util.inspect(message, { depth: null });
+  const metaString = Object.keys(meta).length 
+    ? `\nMETA: ${util.inspect(meta, { depth: null })}` 
+    : '';
+  const logMessage = `${level.toUpperCase()} -- [${safeTimestamp}] ${safeMessage} ${metaString}\n`;
+  return colorizer.colorize(level, logMessage);
 });
 
 // Create the logger
