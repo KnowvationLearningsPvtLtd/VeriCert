@@ -5,7 +5,7 @@ const authRouter = Router();
 
 /**
  * @swagger
- * /api/auth/register:
+ * /auth/register:
  *   post:
  *     summary: Register a new user
  *     description: Allows a user to create a new account.
@@ -39,7 +39,7 @@ const authRouter = Router();
 authRouter.post('/register', register as any);
 /**
  * @swagger
- * /api/auth/login:
+ * /auth/login:
  *   post:
  *     summary: Login a user
  *     description: Authenticate a user and return a JWT token.
