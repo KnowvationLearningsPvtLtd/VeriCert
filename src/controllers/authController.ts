@@ -46,7 +46,14 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
     });
     logger.info(`User logged in: ${email}`);
 
-    res.status(200).json({ token });
+    res.status(200).json({ 
+      token,
+      user: {
+        _id: user._id,
+        username: user.username,
+        email: user.email,
+        role: user.role,
+      } });
   } catch (err) {
     next(err);
   }
