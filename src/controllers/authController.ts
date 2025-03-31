@@ -13,14 +13,14 @@ const register = async (req: Request, res: Response, next: NextFunction) => {
       return res.status(400).json({ errors: parsedData.error.format() });
     }
 
-    const { username, password, role } = parsedData.data;
+    const { username, email, password, role } = parsedData.data;
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = new User({ username, password: hashedPassword, role });
+    const newUser = new User({ username,email, password: hashedPassword, role });
 
     await newUser.save();
-    logger.info(`User registered: ${username}`);
+    logger.info(`User registered: ${email}`);
 
-    res.status(201).json({ message: `User registered with username ${username}` });
+    res.status(201).json({ message: `User registered with email ${email}` });
   } catch (err) {
     next(err); // Pass error to global error handler
   }
@@ -28,11 +28,11 @@ const register = async (req: Request, res: Response, next: NextFunction) => {
 
 const login = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { username, password } = req.body;
-    const user = await User.findOne({ username });
+    const {  email, password } = req.body;
+    const user = await User.findOne({ email });
 
     if (!user) {
-      return res.status(404).json({ message: `User with username ${username} not found` });
+      return res.status(404).json({ message: `User with email ${email} not found` });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
@@ -44,7 +44,7 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
       _id: user._id, 
       role: user.role 
     });
-    logger.info(`User logged in: ${username}`);
+    logger.info(`User logged in: ${email}`);
 
     res.status(200).json({ token });
   } catch (err) {
