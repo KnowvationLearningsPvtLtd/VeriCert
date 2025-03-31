@@ -10,6 +10,7 @@ import rateLimiter from './middlewares/rateLimiter';
 import errorHandler from './middlewares/errorHandler';
 import { authRouter } from './routes/authRoutes';
 import { userRoutes } from './routes/userRoutes';
+import { setupSwagger } from './docs/swagger';
 // import mainRouter from './routes';  // Uncomment when mainRouter is ready
 
 const app = express();
@@ -35,6 +36,7 @@ app.use(express.urlencoded({ extended: true }));
 // Define routes
 app.use('/api/auth', authRouter); 
 app.use('/api/users', userRoutes)
+setupSwagger(app);
 
 // 404 Not Found Middleware
 app.use((req, res) => {
@@ -43,6 +45,7 @@ app.use((req, res) => {
 
 // Global Error Handler
 app.use(errorHandler);
+
 
 app.listen(Number(config.PORT), '127.0.0.1',() => {
   logger.info(`🚀 Server running on PORT:: ${config.PORT}`);

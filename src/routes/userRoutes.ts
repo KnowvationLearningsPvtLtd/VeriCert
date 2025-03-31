@@ -4,7 +4,24 @@ import authorizeRoles from '../middlewares/roleMiddleware';
 
 export const userRoutes = express.Router();
 
-// only admin can acess this router
+/**
+ * @swagger
+ * /api/users/admin:
+ *   get:
+ *     summary: Admin access only
+ *     description: Returns a welcome message if the user has admin role.
+ *     tags:
+ *       - Users
+ *     security:
+ *       - BearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Welcome Admin
+ *       401:
+ *         description: Unauthorized, invalid token
+ *       403:
+ *         description: Forbidden, insufficient permissions
+ */
 userRoutes.get('/admin', 
     verifyToken, 
     authorizeRoles('admin'),
@@ -12,7 +29,24 @@ userRoutes.get('/admin',
     res.json({message: 'Welcome Admin'});
 });
 
-// Both admin and organization can access
+/**
+ * @swagger
+ * /api/users/organization:
+ *   get:
+ *     summary: Admin and Organization access
+ *     description: Returns a welcome message if the user has admin or organization role.
+ *     tags:
+ *       - Users
+ *     security:
+ *       - BearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Welcome Organization
+ *       401:
+ *         description: Unauthorized, invalid token
+ *       403:
+ *         description: Forbidden, insufficient permissions
+ */
 userRoutes.get('/organization',
      verifyToken, 
      authorizeRoles('admin', 'organization'),
@@ -20,7 +54,24 @@ userRoutes.get('/organization',
     res.json({message: 'Welcome organization'});
 });
 
-// All can access
+/**
+ * @swagger
+ * /api/users/user:
+ *   get:
+ *     summary: Access for all roles
+ *     description: Returns a welcome message if the user has admin, organization, or user role.
+ *     tags:
+ *       - Users
+ *     security:
+ *       - BearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Welcome User
+ *       401:
+ *         description: Unauthorized, invalid token
+ *       403:
+ *         description: Forbidden, insufficient permissions
+ */
 userRoutes.get('/user',
      verifyToken,
      authorizeRoles('admin', 'organization', 'user'),
