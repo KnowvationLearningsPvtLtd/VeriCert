@@ -2,6 +2,7 @@ import swaggerJSDoc from 'swagger-jsdoc'
 import swaggerUi from 'swagger-ui-express'
 import config from '../config/config'
 import logger from '../utils/logger'
+import { Express } from 'express';
 
 
 
@@ -38,7 +39,8 @@ const options: swaggerJSDoc.Options = {
   
 const swaggerSpec = swaggerJSDoc(options)
 
-export const setupSwagger = (app) =>{
+export const setupSwagger = (app: Express) => {
+
     app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
     logger.info(`Swagger docs available at http://localhost:${config.PORT}/api-docs`)    
 }

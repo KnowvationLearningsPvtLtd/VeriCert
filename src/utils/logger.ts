@@ -20,9 +20,14 @@ const consoleLogFormat = format.printf(({ level, message, timestamp, meta = {} }
 
   const safeTimestamp = typeof timestamp === 'string' ? timestamp : new Date().toISOString();
   const safeMessage = typeof message === 'string' ? message : util.inspect(message, { depth: null });
-  const metaString = Object.keys(meta).length 
-    ? `\nMETA: ${util.inspect(meta, { depth: null })}` 
-    : '';
+  // const metaString = Object.keys(meta).length 
+  //   ? `\nMETA: ${util.inspect(meta, { depth: null })}` 
+  //   : '';
+  const safeMeta = typeof meta === 'object' && meta !== null ? meta : {};
+  const metaString = Object.keys(safeMeta).length
+  ? `\nMETA: ${util.inspect(safeMeta, { depth: null })}`
+  : '';
+
   const logMessage = `${level.toUpperCase()} -- [${safeTimestamp}] ${safeMessage} ${metaString}\n`;
   return colorizer.colorize(level, logMessage);
 });
