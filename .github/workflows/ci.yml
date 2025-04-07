@@ -17,14 +17,15 @@ jobs:
     build:
         runs-on: ubuntu-latest
         env:
-        PORT: 3001
-        JWT_SECRET: test_jwt_secret
-        REFRESH_SECRET: test_refresh_secret
-        EMAIL_HOST: smtp.test.brevo.com
-        EMAIL_PORT: 1025
-        EMAIL_USER: test_user@smtp-brevo.com
-        EMAIL_PASS: test_password
-        TEST_MONGO_URI: mongodb://localhost:27017/test-db
+              PORT: 3001
+              JWT_SECRET: ${{ secrets.JWT_SECRET }}
+              REFRESH_SECRET: ${{ secrets.REFRESH_SECRET }}
+              EMAIL_HOST: ${{ secrets.EMAIL_HOST }}
+              EMAIL_PORT: ${{ secrets.EMAIL_PORT }}
+              EMAIL_USER: ${{ secrets.EMAIL_USER }}
+              EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
+              TEST_MONGO_URI: ${{ secrets.TEST_MONGO_URI }}
+
 
 
         steps:
@@ -53,5 +54,5 @@ jobs:
             - name: Check Formatting
               run: pnpm run format
 
-            #- name: Build Project
+            # - name: Build Project
              # run: pnpm run build
