@@ -1,7 +1,3 @@
-// // tests/unit/authController.test.ts
-
-// 
-
 import { register, login, logout } from '../../../src/controllers/authController';
 import { Request, Response, NextFunction } from 'express';
 import bcrypt from 'bcryptjs';
@@ -140,3 +136,9 @@ describe('Auth Controller', () => {
   });
 });
 
+import mongoose from 'mongoose';
+
+afterAll(async () => {
+  await mongoose.disconnect();
+  await new Promise(resolve => setTimeout(resolve, 500));
+});

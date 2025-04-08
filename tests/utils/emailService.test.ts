@@ -1,12 +1,12 @@
 import nodemailer from 'nodemailer';
 import { sendEmail } from '../../src/utils/emailService';
-import logger from '../../src/utils/logger'; // Correctly importing your logger
+import logger from '../../src/utils/logger'; 
 
 jest.mock('nodemailer');
 
 const sendMailMock = jest.fn();
 
-// Mock nodemailer transport
+
 (nodemailer.createTransport as jest.Mock).mockReturnValue({
   sendMail: sendMailMock,
 });
