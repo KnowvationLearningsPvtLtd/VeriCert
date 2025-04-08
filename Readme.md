@@ -76,12 +76,44 @@ By following these rules, your commits will be **clean, structured, and useful**
 
 ## TESTS
 
-| Test Type | What to Test? | Tools Used |
-| --- | --- | --- |
-| **Unit Tests** | Middlewares, Models, Utils | Jest |
-| **Integration Tests** | APIs, Services, DB Queries | Supertest, Jest |
-| **Database Tests** | Prisma Queries, Constraints, Relations | Jest, Prisma |
-| **Utility Tests** | Helper Functions, Validators, Formatters | Jest |
-| **Fixtures** | Mock Data for Users, Tasks, etc. | Plain TS Files |
+### ✅ Running Tests
+
+Run all tests with:
+
+```bash
+pnpm test --detectOpenHandles
+```
+
+> The `--detectOpenHandles` flag helps identify any hanging resources like open DB connections or async operations that are not properly cleaned up after tests.
 
 ---
+
+### 🧪 Test Structure Overview
+
+| Test Type           | What to Test?                             | Tools Used              |
+|---------------------|-------------------------------------------|-------------------------|
+| **Unit Tests**      | Middlewares, Models, Utils                | Jest                    |
+| **Integration Tests** | APIs, Services, DB Queries               | Supertest, Jest         |
+| **Database Tests**  | Prisma Queries, Constraints, Relations    | Jest, Prisma            |
+| **Utility Tests**   | Helper Functions, Validators, Formatters  | Jest                    |
+| **Fixtures**        | Mock Data (Users, Tasks, etc.)            | Plain TypeScript Files  |
+
+---
+
+By following these conventions and practices, **VeriCert** remains maintainable, testable, and developer-friendly. 🚀
+
+---
+
+### ✅ API Documentation
+
+- Swagger UI is available at:  
+  **`http://localhost:3000/swagger`**
+
+It provides:
+- A full list of available API endpoints
+- Request and response formats
+- HTTP status codes
+- Example inputs/outputs
+
+---
+
