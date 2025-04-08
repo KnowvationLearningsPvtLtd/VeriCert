@@ -1,17 +1,17 @@
-// tests/userModel.test.ts
 import mongoose from 'mongoose';
 import { MongoMemoryServer } from 'mongodb-memory-server';
-import User from '../../../src/models/userModel'; // Adjust path as needed
+import User from '../../../src/models/userModel';
 
 let mongoServer: MongoMemoryServer;
 
 beforeAll(async () => {
   mongoServer = await MongoMemoryServer.create();
   await mongoose.connect(mongoServer.getUri());
+  await User.syncIndexes();
 });
 
 afterAll(async () => {
-  await mongoose.disconnect();
+  await mongoose.connection.close(); 
   await mongoServer.stop();
 });
 
@@ -27,8 +27,7 @@ describe('User Model Test Suite', () => {
       password: 'securePass123',
       role: 'user',
     };
-    const user = new User(userData);
-    const savedUser = await user.save();
+    const savedUser = await new User(userData).save();
 
     expect(savedUser._id).toBeDefined();
     expect(savedUser.username).toBe(userData.username);
@@ -37,14 +36,26 @@ describe('User Model Test Suite', () => {
   });
 
   it('should not allow duplicate email or username', async () => {
-    const userData = {
+    const userData1 = {
       username: 'duplicateUser',
       email: 'dupe@example.com',
       password: 'pass123',
       role: 'organization',
     };
-    await new User(userData).save();
-    await expect(new User(userData).save()).rejects.toThrow();
+
+    const userData2 = {
+      username: 'duplicateUser',
+      email: 'dupe@example.com',
+      password: 'pass456',
+      role: 'organization',
+    };
+
+    await new User(userData1).save();
+
+    await expect(new User(userData2).save()).rejects.toMatchObject({
+      name: 'MongoServerError',
+      code: 11000,
+    });
   });
 
   it('should require a valid email format', async () => {
@@ -54,11 +65,34 @@ describe('User Model Test Suite', () => {
       password: 'pass123',
       role: 'user',
     });
-    await expect(invalidEmailUser.save()).rejects.toThrow();
+
+    let error;
+    try {
+      await invalidEmailUser.save();
+    } catch (err: any) {
+      error = err;
+    }
+
+    expect(error).toBeDefined();
+    expect(error.name).toBe('ValidationError');
+    expect(error.errors.email).toBeDefined();
   });
 
   it('should enforce required fields', async () => {
     const user = new User({});
-    await expect(user.save()).rejects.toThrow();
+
+    let error;
+    try {
+      await user.save();
+    } catch (err: any) {
+      error = err;
+    }
+
+    expect(error).toBeDefined();
+    expect(error.name).toBe('ValidationError');
+    expect(error.errors.username).toBeDefined();
+    expect(error.errors.email).toBeDefined();
+    expect(error.errors.password).toBeDefined();
+    expect(error.errors.role).toBeDefined();
   });
 });

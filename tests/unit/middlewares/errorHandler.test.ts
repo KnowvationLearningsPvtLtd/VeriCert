@@ -1,6 +1,3 @@
-
-
-// tests/unit/middlewares/errorHandler.test.ts
 import { Request, Response } from 'express';
 import errorHandler, { CustomError } from '../../../src/middlewares/errorHandler';
 import logger from '../../../src/utils/logger';
@@ -64,7 +61,7 @@ describe('errorHandler middleware', () => {
   it('should default message to Internal Server Error if none provided', () => {
     const error: CustomError = {
       name: 'EmptyError',
-      message: '', // message is empty string
+      message: '', 
     };
 
     errorHandler(error, req as Request, res as Response);

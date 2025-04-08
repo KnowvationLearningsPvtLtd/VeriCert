@@ -38,8 +38,8 @@ const userSchema: Schema<IUser> = new Schema(
     timestamps: true,
   }
 );
-userSchema.index({ email: 1 }, { unique: true });
-userSchema.index({ username: 1 }, { unique: true });
+// userSchema.index({ email: 1 }, { unique: true });
+// userSchema.index({ username: 1 }, { unique: true });
 
 const User: Model<IUser> = mongoose.model<IUser>('User', userSchema);
 export default User;
