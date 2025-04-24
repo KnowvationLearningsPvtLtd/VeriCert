@@ -1,8 +1,8 @@
-import express from 'express';
-import verifyToken from '../middlewares/authMiddleware';
-import authorizeRoles from '../middlewares/roleMiddleware';
+import express from 'express'
+import verifyToken from '../middlewares/authMiddleware'
+import authorizeRoles from '../middlewares/roleMiddleware'
 
-export const userRoutes = express.Router();
+export const userRoutes = express.Router()
 
 /**
  * @swagger
@@ -22,12 +22,9 @@ export const userRoutes = express.Router();
  *       403:
  *         description: Forbidden, insufficient permissions
  */
-userRoutes.get('/admin', 
-    verifyToken, 
-    authorizeRoles('admin'),
-(req,res) => {
-    res.json({message: 'Welcome Admin'});
-});
+userRoutes.get('/admin', verifyToken, authorizeRoles('admin'), (req, res) => {
+    res.json({ message: 'Welcome Admin' })
+})
 
 /**
  * @swagger
@@ -47,12 +44,9 @@ userRoutes.get('/admin',
  *       403:
  *         description: Forbidden, insufficient permissions
  */
-userRoutes.get('/organization',
-     verifyToken, 
-     authorizeRoles('admin', 'organization'),
-(req,res) => {
-    res.json({message: 'Welcome organization'});
-});
+userRoutes.get('/organization', verifyToken, authorizeRoles('admin', 'organization'), (req, res) => {
+    res.json({ message: 'Welcome organization' })
+})
 
 /**
  * @swagger
@@ -72,9 +66,6 @@ userRoutes.get('/organization',
  *       403:
  *         description: Forbidden, insufficient permissions
  */
-userRoutes.get('/user',
-     verifyToken,
-     authorizeRoles('admin', 'organization', 'user'),
-     (req,res) => {
-    res.json({message: 'Welcome user'});
-});
+userRoutes.get('/user', verifyToken, authorizeRoles('admin', 'organization', 'user'), (req, res) => {
+    res.json({ message: 'Welcome user' })
+})

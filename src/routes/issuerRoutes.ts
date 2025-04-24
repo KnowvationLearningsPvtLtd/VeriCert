@@ -1,105 +1,219 @@
-import { Router, Request, Response } from 'express';
-import verifyToken from '../../src/middlewares/authMiddleware';
-import Issuer from '../../src/models/issuerModel'; // adjust the path if needed
-import Certificate from '../../src/models/certificateModel';
+import { Router } from 'express'
+import verifyToken from '../middlewares/authMiddleware'
+import { updateProfile, storeCertificates, getCertificateById, sendCertificateWithQR, sendBatchCertificates } from '../controllers/issuerController'
 
-const router = Router();
+const router = Router()
 
-interface AuthenticatedRequest extends Request {
-  user?: {
-    id: string;
-    role: string;
-  };
-}
+/**
+ * @swagger
+ * tags:
+ *   name: Issuer
+ *   description: Issuer management and certificate operations
+ */
 
-router.put('/profile', verifyToken, async (req: AuthenticatedRequest, res: Response) => {
-  try {
-    // Destructure the necessary fields from the request body
-    const { username, email } = req.body;
+/**
+ * @swagger
+ * /issuer/profile:
+ *   put:
+ *     summary: Update issuer profile
+ *     description: Update an issuer's profile information
+ *     tags: [Issuer]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - username
+ *               - email
+ *             properties:
+ *               username:
+ *                 type: string
+ *                 description: Issuer's username
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 description: Issuer's email address
+ *     responses:
+ *       200:
+ *         description: Profile updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 updatedUser:
+ *                   type: object
+ *       400:
+ *         description: Missing required fields
+ *       401:
+ *         description: Unauthorized
+ *       404:
+ *         description: Issuer not found
+ *       500:
+ *         description: Server error
+ */
+router.put('/profile', verifyToken, updateProfile)
 
-    // Check if the user is authenticated and has a valid ID
-    if (!req.user || !req.user.id) {
-      res.status(401).json({ message: 'Unauthorized: Invalid token or user data' });
-      return;
-    }
+/**
+ * @swagger
+ * /issuer/certificates:
+ *   post:
+ *     summary: Store certificates
+ *     description: Store multiple certificates in JSON format
+ *     tags: [Issuer]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - certificates
+ *               - templateId
+ *             properties:
+ *               templateId:
+ *                 type: string
+ *                 description: ID of the template to use
+ *               certificates:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     name:
+ *                       type: string
+ *                     email:
+ *                       type: string
+ *                       format: email
+ *     responses:
+ *       201:
+ *         description: Certificates stored successfully
+ *       401:
+ *         description: Unauthorized
+ *       500:
+ *         description: Server error
+ */
+router.post('/certificates', verifyToken, storeCertificates)
 
-    // Validate input data (additional validation can be added as needed)
-    if (!username || !email) {
-      res.status(400).json({ message: 'Username and email are required' });
-      return;
-    }
+/**
+ * @swagger
+ * /issuer/certificates/{id}:
+ *   get:
+ *     summary: Get certificate by ID
+ *     description: Retrieve a certificate by its unique ID
+ *     tags: [Issuer]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Certificate unique ID
+ *     responses:
+ *       200:
+ *         description: Certificate retrieved successfully
+ *       401:
+ *         description: Unauthorized
+ *       404:
+ *         description: Certificate not found
+ *       500:
+ *         description: Server error
+ */
+router.get('/certificates/:id', verifyToken, getCertificateById)
 
-    // Update the issuer profile based on their ID
-    const updatedUser = await Issuer.findByIdAndUpdate(
-      req.user.id,
-      { username, email },
-      { new: true, runValidators: true } // Ensure the updated data is returned and validators are run
-    ).select('-password'); // Exclude password from the result for security
+/**
+ * @swagger
+ * /issuer/certificates/{id}/qr:
+ *   get:
+ *     summary: Generate QR code and send certificate
+ *     description: Generate a QR code for certificate verification and send it to the recipient via email
+ *     tags: [Issuer]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Certificate unique ID
+ *     responses:
+ *       200:
+ *         description: QR code generated and email sent successfully
+ *       400:
+ *         description: Certificate missing recipient email
+ *       401:
+ *         description: Unauthorized
+ *       404:
+ *         description: Certificate not found
+ *       500:
+ *         description: Server error
+ */
+router.get('/certificates/:id/qr', verifyToken, sendCertificateWithQR)
 
-    // If no user is found with the provided ID, return a 404 error
-    if (!updatedUser) {
-      res.status(404).json({ message: 'Issuer not found' });
-      return;
-    }
+/**
+ * @swagger
+ * /issuer/certificates/send-batch:
+ *   post:
+ *     summary: Send batch certificates
+ *     description: Send multiple certificates with QR codes via email in a batch process
+ *     tags: [Issuer]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - certificateIds
+ *             properties:
+ *               certificateIds:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                 description: Array of certificate IDs to process
+ *     responses:
+ *       200:
+ *         description: Batch processing completed
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 results:
+ *                   type: object
+ *                   properties:
+ *                     success:
+ *                       type: array
+ *                       items:
+ *                         type: string
+ *                     failed:
+ *                       type: array
+ *                       items:
+ *                         type: object
+ *                         properties:
+ *                           id:
+ *                             type: string
+ *                           reason:
+ *                             type: string
+ *       400:
+ *         description: Invalid or empty certificate IDs array
+ *       401:
+ *         description: Unauthorized
+ *       500:
+ *         description: Server error
+ */
+router.post('/certificates/send-batch', verifyToken, sendBatchCertificates)
 
-    // Return the updated user details
-    res.json({ updatedUser });
-  } catch (err) {
-    // Log the error for debugging purposes
-    console.error('Error updating issuer profile:', err);
-    
-    // Send a generic error response
-    res.status(500).json({ message: 'Failed to update profile. Please try again later.' });
-  }
-});
-
-// Route to store certificates in JSON format
-router.post('/certificates', verifyToken, async (req: AuthenticatedRequest, res: Response) => {
-  try {
-    const { certificates, templateId } = req.body; // Expecting an array of certificates and a template ID
-    const adminId = req.user?.id;
-
-    if (!adminId) {
-      res.status(401).json({ message: 'Unauthorized: Invalid token or user data' });
-      return;
-    }
-
-    // Assign a unique 6-digit ID to each certificate and store as JSON
-    const savedCertificates = await Promise.all(certificates.map(async (cert: any) => {
-      const certificateId = Math.floor(100000 + Math.random() * 900000).toString();
-      const certificateData = {
-        templateId,
-        data: cert,
-        certificateId,
-        adminId
-      };
-      const newCertificate = new Certificate(certificateData);
-      return await newCertificate.save();
-    }));
-
-    res.status(201).json({ message: 'Certificates stored successfully', savedCertificates });
-  } catch (err) {
-    console.error('Error storing certificates:', err);
-    res.status(500).json({ message: 'Failed to store certificates. Please try again later.' });
-  }
-});
-
-// Route to fetch a certificate by its unique ID
-router.get('/certificates/:id', verifyToken, async (req: AuthenticatedRequest, res: Response) => {
-  try {
-    const { id } = req.params;
-    const certificate = await Certificate.findOne({ certificateId: id, adminId: req.user?.id });
-
-    if (!certificate) {
-      res.status(404).json({ message: 'Certificate not found' });
-      return;
-    }
-
-    res.json({ certificate });
-  } catch (err) {
-    console.error('Error fetching certificate:', err);
-    res.status(500).json({ message: 'Failed to fetch certificate. Please try again later.' });
-  }
-});
-
-export default router;
+export default router
