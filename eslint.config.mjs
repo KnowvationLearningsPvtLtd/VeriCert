@@ -18,13 +18,14 @@ export default tseslint.config({
         'no-useless-catch': 0,
         quotes: ['error', 'single', { allowTemplateLiterals: true }],
 
-        // SHOULD BE ON LETSEEEE IF 
+        // SHOULD BE ON LETSEEEE IF
         'no-prototype-builtins': 'off',
         '@typescript-eslint/no-explicit-any': 'off',
         '@typescript-eslint/no-unsafe-assignment': 'off',
         '@typescript-eslint/no-unsafe-call': 'off',
         '@typescript-eslint/no-unsafe-member-access': 'off',
         '@typescript-eslint/no-unsafe-return': 'off',
-        '@typescript-eslint/no-unsafe-argument': 'off'
+        '@typescript-eslint/no-unsafe-argument': 'off',
+        '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }]
     }
 })

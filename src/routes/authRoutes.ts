@@ -1,7 +1,7 @@
-import { Router } from 'express';
-import { register, login, logout } from '../controllers/authController';
+import { Router } from 'express'
+import { register, login, logout } from '../controllers/authController'
 
-const authRouter = Router();
+const authRouter = Router()
 
 /**
  * @swagger
@@ -36,7 +36,7 @@ const authRouter = Router();
  *       500:
  *         description: Internal server error
  */
-authRouter.post('/register', register as any);
+authRouter.post('/register', register as any)
 /**
  * @swagger
  * /auth/login:
@@ -68,7 +68,7 @@ authRouter.post('/register', register as any);
  *       500:
  *         description: Internal server error
  */
-authRouter.post('/login', login as any);
-authRouter.post('/logout', logout as any);
+authRouter.post('/login', login as any)
+authRouter.post('/logout', logout as any)
 
-export { authRouter };
+export { authRouter }

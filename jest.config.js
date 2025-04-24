@@ -1,13 +1,11 @@
 /** @type {import('ts-jest').JestConfigWithTsJest} **/
 module.exports = {
-  testEnvironment: "node",
-  preset: 'ts-jest',
-  transform: {
-    "^.+\.tsx?$": ["ts-jest",{}],
-    
-  },
-};
-
+    testEnvironment: 'node',
+    preset: 'ts-jest',
+    transform: {
+        '^.+\.tsx?$': ['ts-jest', {}]
+    }
+}
 
 // /** @type {import('ts-jest').JestConfigWithTsJest} */
 // const config = {
@@ -20,5 +18,3 @@ module.exports = {
 // };
 
 // export default config;
-
-

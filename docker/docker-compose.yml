@@ -1,20 +1,20 @@
 version: '3.8'
 services:
-  mongodb:
-    image: mongo:7
-    container_name: mongodb_container
-    ports:
-    - "27017:27017"
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME= vericert
-      - MONGO_INITDB_ROOT_PASSWORD= veri
-    volumes:
-     - mongo_db:/data/db
-    healthcheck:
-      test: echo `db.runCommand("ping").ok` | mongosh --host localhost --port 27017 -u vericert -p ver --authenticationDatabase admin
-      interval: 10s
-      timemout: 4s
-      retries: 5
+    mongodb:
+        image: mongo:7
+        container_name: mongodb_container
+        ports:
+            - '27017:27017'
+        environment:
+            - MONGO_INITDB_ROOT_USERNAME= vericert
+            - MONGO_INITDB_ROOT_PASSWORD= veri
+        volumes:
+            - mongo_db:/data/db
+        healthcheck:
+            test: echo `db.runCommand("ping").ok` | mongosh --host localhost --port 27017 -u vericert -p ver --authenticationDatabase admin
+            interval: 10s
+            timemout: 4s
+            retries: 5
 
 volumes:
-  mongo_data:
+    mongo_data:
