@@ -95,88 +95,226 @@ SMTP_PASS=your_smtp_password
 
 ## 🧪 Testing
 
-### Backend Testing
-```bash
-cd Backend
-pnpm test
+The project includes comprehensive testing covering units, integrations, and validations.
+
+### Backend Test Structure
+```
+tests/
+├── unit/           # Unit tests for individual components
+├── integration/    # API and service integration tests
+├── validations/    # Input validation tests
+├── utils/          # Utility function tests
+└── fixtures/       # Test data and mock objects
 ```
 
-### Frontend Testing
-```bash
-cd React-TS-BoilerPlate
-pnpm test
+### Test Coverage
+
+#### 1. Authentication Tests
+- User Registration
+  - ✅ Valid registration with complete data
+    - Input: {username: "john_doe", email: "john@example.com", password: "Pass123!", role: "user"}
+    - Output: User object with 201 status
+  - ❌ Invalid registration with duplicate email
+    - Input: Existing email
+    - Output: 400 status with duplicate error
+  - ❌ Invalid registration with weak password
+    - Input: Password without special chars/numbers
+    - Output: 400 status with password requirements
+  - ❌ Invalid registration with missing fields
+    - Input: Missing required fields
+    - Output: 400 status with field requirements
+
+- User Login
+  - ✅ Valid login with correct credentials
+    - Input: {email: "john@example.com", password: "Pass123!"}
+    - Output: JWT token and user details
+  - ❌ Invalid login attempts
+    - Input: Wrong password (3 attempts)
+    - Output: Account temporary lock
+
+#### 2. Certificate Management Tests
+- Certificate Creation
+  - ✅ Single Certificate
+    - Input: {templateId: "temp1", name: "John Doe", course: "Web Dev"}
+    - Output: Certificate with QR code
+  - ✅ Batch Certificates
+    - Input: Array of certificate data
+    - Output: Success count and failure details
+  - ❌ Validation Failures
+    - Missing template
+    - Invalid recipient email
+    - Duplicate certificate ID
+
+- Certificate Verification
+  - ✅ Public Access
+    - Input: Valid certificate ID
+    - Output: Certificate details with verification status
+  - ✅ QR Code Scanning
+    - Input: QR code scan
+    - Output: Verification page with certificate
+  - ❌ Security Checks
+    - Tampered certificate data
+    - Expired certificates
+    - Invalid QR codes
+
+#### 3. Email Service Tests
+- Email Delivery
+  - ✅ Single Email
+    - Input: Certificate with recipient email
+    - Output: Delivery confirmation
+  - ✅ Batch Emails
+    - Input: Multiple certificates
+    - Output: Success/failure report
+  - ❌ Error Handling
+    - Invalid email format
+    - SMTP server issues
+    - Attachment size limits
+
+#### 4. Input Validation Tests
+- Schema Validation
+  - ✅ User Data
+    - Username: 3-30 chars, alphanumeric
+    - Email: Valid format
+    - Password: Min 8 chars, mixed case, numbers
+  - ✅ Certificate Data
+    - Required fields
+    - Date formats
+    - File size limits
+  - ❌ Edge Cases
+    - Special characters
+    - Empty strings
+    - Whitespace handling
+
+#### 5. Security Tests
+- Authentication
+  - ✅ Token Validation
+    - Valid JWT format
+    - Expiration check
+    - Signature verification
+  - ❌ Security Breaches
+    - Expired tokens
+    - Invalid signatures
+    - Token tampering
+
+- Authorization
+  - ✅ Role Permissions
+    - Admin access
+    - Organization access
+    - User access
+  - ❌ Access Control
+    - Unauthorized routes
+    - Cross-role access attempts
+
+## 📚 API Documentation
+
+### Authentication API
+- POST `/auth/register`
+  ```
+  Request:
+  {
+    "username": "string",
+    "email": "string",
+    "password": "string",
+    "role": "admin|organization|user"
+  }
+  Response:
+  {
+    "user": {user_object},
+    "token": "JWT_token"
+  }
+  ```
+
+- POST `/auth/login`
+  ```
+  Request:
+  {
+    "email": "string",
+    "password": "string"
+  }
+  Response:
+  {
+    "token": "JWT_token",
+    "user": {user_details}
+  }
+  ```
+
+### Certificate API
+- POST `/issuer/certificates`
+  ```
+  Request:
+  {
+    "templateId": "string",
+    "certificates": [{
+      "name": "string",
+      "email": "string",
+      "course": "string",
+      "date": "string"
+    }]
+  }
+  Response:
+  {
+    "success": true,
+    "certificates": [array_of_certificates]
+  }
+  ```
+
+- GET `/issuer/certificates/:id/qr`
+  ```
+  Response:
+  {
+    "certificateId": "string",
+    "qrCode": "base64_string",
+    "verificationUrl": "string"
+  }
+  ```
+
+### Public API
+- GET `/public/verify-certificate/:id`
+  ```
+  Response:
+  {
+    "verified": boolean,
+    "certificate": {
+      "id": "string",
+      "recipient": "string",
+      "course": "string",
+      "issueDate": "string",
+      "issuer": "string"
+    }
+  }
+  ```
+
+### Error Responses
+```
+400 Bad Request:
+{
+  "error": "Validation error",
+  "details": [validation_errors]
+}
+
+401 Unauthorized:
+{
+  "error": "Authentication required"
+}
+
+403 Forbidden:
+{
+  "error": "Insufficient permissions"
+}
+
+404 Not Found:
+{
+  "error": "Resource not found"
+}
+
+500 Server Error:
+{
+  "error": "Internal server error",
+  "message": "Error details"
+}
 ```
 
 ## 📁 Project Structure
 
 ### Backend
 ```
-Backend/
-├── src/
-│   ├── controllers/     # Business logic
-│   ├── routes/         # API endpoints
-│   ├── models/         # Database schemas
-│   ├── middlewares/    # Auth & validation
-│   ├── utils/          # Helper functions
-│   ├── validations/    # Input validation
-│   └── config/         # Configuration files
-```
-
-### Frontend
-```
-React-TS-BoilerPlate/
-├── src/
-    ├── components/     # Reusable UI components
-    ├── pages/         # Route components
-    ├── hooks/         # Custom React hooks
-    ├── utils/         # Helper functions
-    ├── types/         # TypeScript definitions
-    ├── validation/    # Form validation
-    └── tests/         # Unit tests
-```
-
-## 🔒 Security Features
-
-- JWT-based authentication
-- Role-based access control (Admin, Organization, User)
-- Secure password handling
-- Protected routes
-- Input validation and sanitization
-- TypeScript type safety
-
-## 🚦 Development Workflow
-
-1. Code Quality
-   - ESLint for code linting
-   - Prettier for code formatting
-   - TypeScript strict mode
-   - Husky for pre-commit hooks
-
-2. Version Control
-   - Conventional commit messages
-   - Branch management
-   - Pull request workflow
-
-3. Development
-   - Hot reload for development
-   - Environment-specific configurations
-   - Docker support for containerization
-
-## 🏗️ Build and Deployment
-
-### Backend
-```bash
-cd Backend
-pnpm build
-pnpm start
-```
-
-### Frontend
-```bash
-cd React-TS-BoilerPlate
-pnpm build
-```
-
-## 📝 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details. 
