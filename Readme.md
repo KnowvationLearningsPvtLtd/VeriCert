@@ -2,6 +2,105 @@
 
 VeriCert is a modern web application for managing digital certificates, built with TypeScript using React for the frontend and Express.js for the backend. The system enables secure certificate generation, verification, and distribution with QR code integration.
 
+## 📑 Table of Contents
+
+1. [Features](#-features)
+   - [Certificate Management](#certificate-management)
+   - [Email Integration](#email-integration)
+   - [Security](#security)
+
+2. [Tech Stack](#️-tech-stack)
+   - [Frontend](#frontend)
+   - [Backend](#backend)
+
+3. [Installation](#-installation)
+   - [Prerequisites](#prerequisites)
+   - [Backend Setup](#backend-setup)
+   - [Frontend Setup](#frontend-setup)
+
+4. [Environment Variables](#-environment-variables)
+   - [Backend (.env)](#backend-env)
+
+5. [API Endpoints](#-api-endpoints)
+   - [Authentication](#authentication)
+   - [Issuer Operations](#issuer-operations)
+   - [Public Routes](#public-routes)
+   - [User Management](#user-management)
+
+6. [Testing](#-testing)
+   - [Test Structure](#test-structure)
+   - [Running Tests](#running-tests)
+   - [Test Coverage](#test-coverage)
+     - [Authentication Tests](#authentication-tests)
+     - [Certificate Management Tests](#certificate-management-tests)
+     - [Email Service Tests](#email-service-tests)
+     - [Input Validation Tests](#input-validation-tests)
+     - [Security Tests](#security-tests)
+
+7. [API Documentation](#-api-documentation)
+   - [Authentication API](#authentication-api)
+   - [Certificate API](#certificate-api)
+   - [Public API](#public-api)
+   - [Error Responses](#error-responses)
+
+8. [Project Structure](#-project-structure)
+   - [Backend Structure](#backend)
+   - [Frontend Structure](#frontend-structure)
+
+9. [Frontend Architecture](#-frontend-structure)
+   - [Pages](#pages)
+     - [Authentication](#authentication-1)
+     - [Dashboard](#dashboard)
+     - [Certificate Management](#certificate-management-1)
+     - [User Management](#user-management-1)
+     - [Analytics](#analytics)
+   - [Components](#components)
+     - [Certificate Components](#certificate)
+     - [UI Components](#ui)
+   - [Features by Role](#features-by-role)
+     - [Public Access](#public-access)
+     - [Regular User](#regular-user)
+     - [Certificate Issuer](#certificate-issuer)
+     - [Administrator](#administrator)
+
+10. [State Management](#state-management)
+    - [Global State](#global-state)
+      - [Authentication State](#authentication-state)
+      - [Profile State](#profile-state)
+    - [Local State Management](#local-state-management)
+      - [React Query Usage](#react-query-for-server-state)
+      - [Form State](#react-hook-form-for-form-state)
+
+11. [UI/UX Design](#uiux-design-principles)
+    - [Design System](#design-system)
+      - [Color System](#color-system)
+        - [Base Colors](#base-colors)
+        - [Brand Colors](#brand-colors)
+        - [UI Elements](#ui-elements)
+        - [Chart Colors](#chart-colors)
+        - [Gradients](#gradients)
+        - [Usage Guidelines](#usage-guidelines)
+        - [Implementation](#implementation)
+      - [Typography](#typography)
+      - [Spacing](#spacing)
+    - [Accessibility](#accessibility)
+      - [WCAG Compliance](#wcag-21-aa-compliance)
+      - [Keyboard Navigation](#keyboard-navigation)
+      - [Screen Reader Support](#screen-reader-support)
+    - [Responsive Design](#responsive-design)
+      - [Breakpoints](#breakpoints)
+      - [Mobile-first Approach](#mobile-first-approach)
+    - [Performance](#performance-optimization)
+      - [Code Splitting](#code-splitting)
+      - [Lazy Loading](#lazy-loading)
+      - [Bundle Optimization](#bundle-size-monitoring)
+
+12. [Development Guidelines](#development-guidelines)
+    - [Component Structure](#component-structure)
+    - [State Management Rules](#state-management-rules)
+    - [Code Quality](#code-quality)
+    - [Performance Guidelines](#performance-guidelines)
+
 ## 🚀 Features
 
 - **Certificate Management**
@@ -526,30 +625,101 @@ pnpm test:e2e
 ### UI/UX Design Principles
 
 #### Design System
-- **Colors**
-  ```css
-  --primary: #2563eb;    /* Blue */
-  --secondary: #4f46e5;  /* Indigo */
-  --accent: #0ea5e9;     /* Sky */
-  --success: #22c55e;    /* Green */
-  --warning: #eab308;    /* Yellow */
-  --error: #ef4444;      /* Red */
-  ```
 
-- **Typography**
-  ```css
-  --font-sans: 'Inter', sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
-  ```
+##### Color System
+VeriCert uses a comprehensive color system based on HSL values for maximum flexibility and consistency. The color system is implemented using CSS variables and Tailwind CSS.
 
-- **Spacing**
-  ```css
-  --spacing-xs: 0.25rem;  /* 4px */
-  --spacing-sm: 0.5rem;   /* 8px */
-  --spacing-md: 1rem;     /* 16px */
-  --spacing-lg: 1.5rem;   /* 24px */
-  --spacing-xl: 2rem;     /* 32px */
-  ```
+###### Base Colors
+| Variable | HSL Value | HEX | Usage |
+|----------|-----------|-----|-------|
+| `--wheat` | 33 30% 89% | #E8DFD3 | Subtle backgrounds |
+| `--background` | 40 33% 98% | #fdfaf5 | Main background |
+| `--foreground` | 20 20% 20% | #4B3621 | Primary text |
+
+###### Brand Colors
+| Variable | HSL Value | HEX | Usage |
+|----------|-----------|-----|-------|
+| `--primary` | 19 29% 28% | #5C4033 | Primary actions, branding |
+| `--secondary` | 26 37% 39% | #8B5E3C | Secondary elements |
+| `--accent` | 34 33% 65% | #A67B5B | Accents, highlights |
+
+###### UI Elements
+| Variable | HSL Value | HEX | Usage |
+|----------|-----------|-----|-------|
+| `--card` | 40 33% 98% | #fdfaf5 | Card backgrounds |
+| `--muted` | 35 27% 90% | #f6efe6 | Muted elements |
+| `--destructive` | 0 84% 60% | #EF4444 | Error states |
+
+###### Chart Colors
+```typescript
+// Use these arrays for data visualization
+const chartColors = {
+  primary: ['#8B5E3C', '#A67B5B', '#D2B48C', '#5C4033', '#4B3621'],
+  secondary: ['#46A5CA', '#8C2F2F', '#4FAE4D', '#D6590C', '#811010']
+};
+```
+
+###### Gradients
+```typescript
+// Pre-defined gradients for consistent usage
+const gradients = {
+  primary: 'bg-gradient-to-r from-[#5C4033] to-[#8B5E3C]',
+  secondary: 'bg-gradient-to-r from-[#996136] to-[#5C4033]'
+};
+```
+
+###### Usage Guidelines
+
+1. **Component Styling:**
+   ```tsx
+   // Use Tailwind classes with our color system
+   <button className="bg-primary text-primary-foreground">
+     Click Me
+   </button>
+   ```
+
+2. **Dark Mode Support:**
+   - All colors have dark mode variants
+   - Toggle with `dark` class on root element
+   - Colors automatically adjust for dark mode
+
+3. **Charts and Data Visualization:**
+   - Use `chartColors.primary` for main data
+   - Use `chartColors.secondary` for contrasting data sets
+   - Maintain consistent color ordering
+
+4. **Best Practices:**
+   - Always use CSS variables over hardcoded values
+   - Use semantic color names (e.g., `primary` over specific colors)
+   - Consider accessibility and contrast ratios
+   - Use HSL values for dynamic color manipulation
+
+###### Implementation
+```typescript
+// Import color utilities
+import { colors, chartColors, gradients } from '@/lib/colors';
+
+// Usage in components
+const myComponent = {
+  backgroundColor: colors.primary.DEFAULT,
+  color: colors.primary.foreground
+};
+```
+
+##### Typography
+```css
+--font-sans: 'Inter', sans-serif;
+--font-mono: 'JetBrains Mono', monospace;
+```
+
+##### Spacing
+```css
+--spacing-xs: 0.25rem;  /* 4px */
+--spacing-sm: 0.5rem;   /* 8px */
+--spacing-md: 1rem;     /* 16px */
+--spacing-lg: 1.5rem;   /* 24px */
+--spacing-xl: 2rem;     /* 32px */
+```
 
 #### Accessibility
 - WCAG 2.1 AA compliance
