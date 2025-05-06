@@ -97,7 +97,7 @@ SMTP_PASS=your_smtp_password
 
 The project includes comprehensive testing covering units, integrations, and validations.
 
-### Backend Test Structure
+### Test Structure
 ```
 tests/
 ├── unit/           # Unit tests for individual components
@@ -105,6 +105,23 @@ tests/
 ├── validations/    # Input validation tests
 ├── utils/          # Utility function tests
 └── fixtures/       # Test data and mock objects
+```
+
+### Running Tests
+```bash
+cd Backend
+pnpm test                 # Run all tests
+pnpm test:unit           # Run unit tests only
+pnpm test:integration    # Run integration tests only
+pnpm test:coverage       # Generate coverage report
+```
+
+### Frontend Testing
+```bash
+cd React-TS-BoilerPlate
+pnpm test                # Run all tests
+pnpm test:watch         # Run tests in watch mode
+pnpm test:coverage      # Generate coverage report
 ```
 
 ### Test Coverage
@@ -318,3 +335,282 @@ tests/
 
 ### Backend
 ```
+```
+
+## 📱 Frontend Structure
+
+### Pages
+```
+src/pages/
+├── Authentication
+│   ├── LoginPage.tsx        # User login interface
+│   └── SignupPage.tsx       # New user registration
+├── Dashboard
+│   ├── UserDashboard.tsx    # Regular user dashboard
+│   └── IssuerDashboard.tsx  # Certificate issuer dashboard
+├── Certificate Management
+│   ├── IssuerCertificates.tsx    # Certificate listing and management
+│   ├── CertificateSettings.tsx   # Certificate template settings
+│   └── IssuerApprovals.tsx       # Certificate approval workflow
+├── User Management
+│   ├── Profile.tsx              # User profile management
+│   ├── IssuerProfile.tsx        # Issuer profile settings
+│   └── Settings.tsx             # Application settings
+└── Analytics
+    ├── Analytics.tsx            # Usage statistics and reports
+    └── Notifications.tsx        # System notifications
+```
+
+### Components
+```
+src/components/
+├── Certificate
+│   ├── VerifyCertificate.tsx    # Certificate verification widget
+│   ├── CertificateDetails.tsx   # Certificate display component
+│   └── certificate-editor/       # Certificate template editor
+└── ui/                          # Reusable UI components
+```
+
+### Features by Role
+
+#### Public Access
+- Certificate verification through QR code
+- View certificate details
+- User registration
+- Login interface
+
+#### Regular User
+- View received certificates
+- Download certificates
+- Share certificates
+- Profile management
+- Notification preferences
+
+#### Certificate Issuer
+- Create certificate templates
+- Issue single/batch certificates
+- Manage issued certificates
+- View analytics
+- Approval workflows
+- Profile management
+
+#### Administrator
+- User management
+- System settings
+- Analytics dashboard
+- Template management
+- Role management
+
+### UI Components
+
+#### Certificate Management
+- Certificate Template Editor
+  - Drag-and-drop interface
+  - Dynamic field configuration
+  - Preview functionality
+  - Template versioning
+
+- Certificate Verification
+  - QR code scanner
+  - Public verification page
+  - Certificate authenticity check
+  - Download options
+
+#### User Interface
+- Responsive Dashboard
+  - Activity summary
+  - Recent certificates
+  - Quick actions
+  - Statistics overview
+
+- Profile Management
+  - Profile information editor
+  - Security settings
+  - Notification preferences
+  - API key management
+
+### Frontend Libraries
+```json
+{
+  "dependencies": {
+    "@headlessui/react": "Latest",     // Accessible UI components
+    "@heroicons/react": "Latest",      // Icon set
+    "react-query": "Latest",           // Data fetching
+    "tailwindcss": "Latest",           // Styling
+    "zod": "Latest",                   // Form validation
+    "react-hook-form": "Latest",       // Form handling
+    "qrcode.react": "Latest",          // QR code generation
+    "react-router-dom": "Latest"       // Routing
+  }
+}
+```
+
+### State Management
+
+#### Global State
+```typescript
+// Using Jotai for atomic state management
+src/store/
+├── authAtom.ts          # Authentication state
+└── profileAtoms.ts      # User profile state
+```
+
+- **Authentication State**
+  - User session management
+  - JWT token handling
+  - Role-based access control
+  - Login/logout state
+
+- **Profile State**
+  - User information
+  - Preferences
+  - Settings
+  - Notifications
+
+#### Local State Management
+- React Query for server state
+  - Certificate data caching
+  - Optimistic updates
+  - Background refetching
+  - Error handling
+
+- React Hook Form for form state
+  - Form validation
+  - Error handling
+  - Field management
+  - Form submission
+
+### Frontend Testing Strategy
+
+#### Unit Tests
+- Component Testing
+  ```bash
+  # Run component tests
+  pnpm test:components
+  ```
+  - Render testing
+  - Event handling
+  - State changes
+  - Props validation
+
+- Hook Testing
+  ```bash
+  # Run hook tests
+  pnpm test:hooks
+  ```
+  - Custom hooks
+  - State management
+  - Side effects
+  - Error scenarios
+
+#### Integration Tests
+```bash
+# Run integration tests
+pnpm test:integration
+```
+- User flows
+- API integration
+- State management
+- Route transitions
+
+#### E2E Testing
+```bash
+# Run E2E tests
+pnpm test:e2e
+```
+- User journeys
+- Cross-browser testing
+- Performance testing
+- Security testing
+
+### UI/UX Design Principles
+
+#### Design System
+- **Colors**
+  ```css
+  --primary: #2563eb;    /* Blue */
+  --secondary: #4f46e5;  /* Indigo */
+  --accent: #0ea5e9;     /* Sky */
+  --success: #22c55e;    /* Green */
+  --warning: #eab308;    /* Yellow */
+  --error: #ef4444;      /* Red */
+  ```
+
+- **Typography**
+  ```css
+  --font-sans: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  ```
+
+- **Spacing**
+  ```css
+  --spacing-xs: 0.25rem;  /* 4px */
+  --spacing-sm: 0.5rem;   /* 8px */
+  --spacing-md: 1rem;     /* 16px */
+  --spacing-lg: 1.5rem;   /* 24px */
+  --spacing-xl: 2rem;     /* 32px */
+  ```
+
+#### Accessibility
+- WCAG 2.1 AA compliance
+- Keyboard navigation
+- Screen reader support
+- Color contrast ratios
+- Focus management
+
+#### Responsive Design
+- Mobile-first approach
+- Breakpoints:
+  ```css
+  sm: '640px'
+  md: '768px'
+  lg: '1024px'
+  xl: '1280px'
+  2xl: '1536px'
+  ```
+
+#### Performance Optimization
+- Code splitting
+- Lazy loading
+- Image optimization
+- Bundle size monitoring
+- Performance metrics tracking
+
+### Development Guidelines
+
+#### Component Structure
+```typescript
+// Component template
+import React from 'react';
+import { useQuery } from 'react-query';
+import { useForm } from 'react-hook-form';
+
+interface Props {
+  // Props interface
+}
+
+export const Component: React.FC<Props> = ({ ...props }) => {
+  // Component logic
+  return (
+    // JSX
+  );
+};
+```
+
+#### State Management Rules
+1. Use Jotai for global state
+2. React Query for server state
+3. Local state for component-specific data
+4. Context for theme/localization
+
+#### Code Quality
+- ESLint rules
+- Prettier configuration
+- TypeScript strict mode
+- Unit test coverage > 80%
+
+#### Performance Guidelines
+1. Memoization for expensive calculations
+2. Virtual scrolling for long lists
+3. Image lazy loading
+4. Route-based code splitting
